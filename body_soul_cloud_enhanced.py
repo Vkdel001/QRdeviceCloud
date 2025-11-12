@@ -66,16 +66,27 @@ COMPANY_INFO = {
 
 def get_db_connection():
     """Get database connection - supports SQLite and PostgreSQL"""
-    if DATABASE_URL and DATABASE_URL.startswith('postgres'):
+    if DATABASE_URL and 'postgres' in DATABASE_URL:
         # PostgreSQL for cloud deployment
-        import psycopg2
-        import psycopg2.extras
-        # Fix Railway's postgres:// to postgresql://
-        db_url = DATABASE_URL.replace('postgres://', 'postgresql://', 1)
-        conn = psycopg2.connect(db_url)
-        return conn, 'postgresql'
+        try:
+            import psycopg2
+            import psycopg2.extras
+            # Fix Railway's postgres:// to postgresql://
+            db_url = DATABASE_URL.replace('postgres://', 'postgresql://', 1)
+            print(f"Connecting to PostgreSQL...")
+            conn = psycopg2.connect(db_url)
+            print(f"✓ PostgreSQL connected")
+            return conn, 'postgresql'
+        except Exception as e:
+            print(f"✗ PostgreSQL connection failed: {e}")
+            print(f"Falling back to SQLite...")
+            import sqlite3
+            conn = sqlite3.connect('body_soul.db')
+            conn.row_factory = sqlite3.Row
+            return conn, 'sqlite'
     else:
         # SQLite for local development
+        print(f"Using SQLite database")
         import sqlite3
         conn = sqlite3.connect('body_soul.db')
         conn.row_factory = sqlite3.Row
@@ -439,10 +450,16 @@ def health():
     """Health check endpoint for Railway"""
     return jsonify({'status': 'healthy', 'service': 'Body & Soul Cloud POS'})
 
+@app.route('/init_db')
+def init_db_endpoint():
+    """Initialize database - call this once after deployment"""
+    try:
+        init_db()
+        return jsonify({'success': True, 'message': 'Database initialized successfully'})
+    except Exception as e:
+        return jsonify({'success': False, 'error': str(e)}), 500
+
 if __name__ == '__main__':
-    # Initialize database
-    init_db()
-    
     port = int(os.getenv('PORT', 5000))
     
     print("="*60)
@@ -457,6 +474,16 @@ if __name__ == '__main__':
     print("="*60)
     print(f"POS Interface: http://localhost:{port}")
     print(f"Local Service Ports: {LOCAL_SERVICE_PORTS}")
+    print("="*60)
+    
+    # Initialize database
+    print("Initializing database...")
+    try:
+        init_db()
+        print("✓ Database initialized successfully")
+    except Exception as e:
+        print(f"✗ Database initialization failed: {e}")
+    
     print("="*60)
     print("Checking for local service...")
     local_url = find_local_service()
