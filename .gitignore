@@ -1,0 +1,85 @@
+# Python
+__pycache__/
+*.py[cod]
+*$py.class
+*.so
+.Python
+build/
+develop-eggs/
+dist/
+downloads/
+eggs/
+.eggs/
+lib/
+lib64/
+parts/
+sdist/
+var/
+wheels/
+*.egg-info/
+.installed.cfg
+*.egg
+MANIFEST
+
+# Virtual Environment
+env/
+venv/
+ENV/
+env.bak/
+venv.bak/
+
+# Environment Variables
+.env
+.env.local
+.env.production
+
+# Database
+*.db
+*.sqlite
+*.sqlite3
+body_soul.db
+body_soul_cloud.db
+
+# Logs
+*.log
+payment_terminal_*.log
+
+# Temporary Files
+temp_*.jpg
+temp_*.png
+temp_*.jpeg
+payment_qr.jpg
+payment_qr.png
+test_qr*.png
+
+# IDE
+.vscode/
+.idea/
+*.swp
+*.swo
+*~
+
+# OS
+.DS_Store
+.DS_Store?
+._*
+.Spotlight-V100
+.Trashes
+ehthumbs.db
+Thumbs.db
+desktop.ini
+
+# Project Specific
+ngrok.exe
+old_files/
+Images/*.jpg
+Images/*.png
+
+# Compiled executables
+*.exe
+dist/
+build/
+
+# Backup files
+*.bak
+*.backup

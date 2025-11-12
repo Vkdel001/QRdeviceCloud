@@ -1,0 +1,4 @@
+pyserial==3.5
+Pillow==10.1.0
+qrcode==7.4.2
+Flask==2.3.3
