@@ -1,0 +1,8 @@
+[phases.setup]
+nixPkgs = ["python311"]
+
+[phases.install]
+cmds = ["pip install -r requirements_cloud.txt"]
+
+[start]
+cmd = "gunicorn body_soul_cloud_enhanced:app"

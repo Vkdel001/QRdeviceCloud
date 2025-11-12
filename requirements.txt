@@ -1,4 +1,6 @@
-pyserial==3.5
-Pillow==10.1.0
-qrcode==7.4.2
+# Cloud Application Dependencies (Railway)
 Flask==2.3.3
+requests==2.31.0
+gunicorn==21.2.0
+python-dotenv==1.0.0
+psycopg2-binary==2.9.9
