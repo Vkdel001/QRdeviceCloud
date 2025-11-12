@@ -51,7 +51,13 @@ def find_local_service():
     return None
 
 # Database configuration - supports both SQLite (local) and PostgreSQL (cloud)
-DATABASE_URL = os.getenv('DATABASE_URL')
+def get_database_url():
+    """Get database URL with debug logging"""
+    db_url = os.getenv('DATABASE_URL')
+    print(f"DEBUG: DATABASE_URL = {db_url[:50] if db_url else 'None'}...")
+    return db_url
+
+DATABASE_URL = get_database_url()
 
 # Company details for receipts (Mauritius requirements)
 COMPANY_INFO = {
@@ -66,15 +72,17 @@ COMPANY_INFO = {
 
 def get_db_connection():
     """Get database connection - supports SQLite and PostgreSQL"""
-    if DATABASE_URL and 'postgres' in DATABASE_URL:
+    db_url = os.getenv('DATABASE_URL')  # Read fresh each time
+    print(f"DEBUG: Connecting with DATABASE_URL present: {bool(db_url)}")
+    if db_url and 'postgres' in db_url:
         # PostgreSQL for cloud deployment
         try:
             import psycopg2
             import psycopg2.extras
             # Fix Railway's postgres:// to postgresql://
-            db_url = DATABASE_URL.replace('postgres://', 'postgresql://', 1)
+            connection_url = db_url.replace('postgres://', 'postgresql://', 1)
             print(f"Connecting to PostgreSQL...")
-            conn = psycopg2.connect(db_url)
+            conn = psycopg2.connect(connection_url)
             print(f"✓ PostgreSQL connected")
             return conn, 'postgresql'
         except Exception as e:
