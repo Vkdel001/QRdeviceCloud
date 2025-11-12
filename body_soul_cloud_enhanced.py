@@ -53,8 +53,17 @@ def find_local_service():
 # Database configuration - supports both SQLite (local) and PostgreSQL (cloud)
 def get_database_url():
     """Get database URL with debug logging"""
-    db_url = os.getenv('DATABASE_URL')
-    print(f"DEBUG: DATABASE_URL = {db_url[:50] if db_url else 'None'}...")
+    # Try multiple possible environment variable names
+    db_url = (
+        os.getenv('DATABASE_URL') or 
+        os.getenv('POSTGRES_URL') or 
+        os.getenv('POSTGRESQL_URL') or
+        os.getenv('DATABASE_PRIVATE_URL')
+    )
+    print(f"DEBUG: All env vars:")
+    print(f"  DATABASE_URL = {os.getenv('DATABASE_URL')[:50] if os.getenv('DATABASE_URL') else 'None'}")
+    print(f"  POSTGRES_URL = {os.getenv('POSTGRES_URL')[:50] if os.getenv('POSTGRES_URL') else 'None'}")
+    print(f"  Selected URL = {db_url[:50] if db_url else 'None'}...")
     return db_url
 
 DATABASE_URL = get_database_url()
